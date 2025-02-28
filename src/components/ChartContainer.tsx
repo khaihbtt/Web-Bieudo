@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createChart, ISeriesApi, CandlestickData } from "lightweight-charts";
 
 const ChartContainer = ({ theme, timeframe }: { theme: string; timeframe: string }) => {

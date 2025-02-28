@@ -1,11 +1,11 @@
 
 .chart-layout {
   display: grid;
-  grid-template-columns: 3fr 1fr ; /* Sidebar nhỏ tự động, biểu đồ chiếm phần còn lại */
+  grid-template-columns: 3fr 1fr ; 
   height: 90vh;
   gap: 10px;
   background-color: #f5f5f5;
-  width: 100vw; /* Đảm bảo full chiều rộng */
+  width: 100vw; 
 }
 
 

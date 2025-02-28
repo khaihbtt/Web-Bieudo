@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ChartContainer from "../components/ChartContainer";
 import ThemeToggle from "../components/Toggle";
 import TimeframeButtons from "../components/TimeframeButtons";
