@@ -10,20 +10,22 @@ const BitcoinChart = () => {
   const [timeframe, setTimeframe] = useState("1m");
 
   return (
-    <div className="container">
-      <div className="left-panel">
+    <div className="chart-layout">
+      {/* Bên trái (các nút bấm, giá cả) */}
+      <div className="chart-sidebar">
         <ThemeToggle theme={theme} setTheme={setTheme} />
         <TimeframeButtons setTimeframe={setTimeframe} />
-      </div>
-      <div className="right-panel">
         <PriceFetcher />
       </div>
-      <div className="middle-panel">
+  
+      {/* Bên phải (Biểu đồ) */}
+      <div className="chart-main">
         <ChartContainer theme={theme} timeframe={timeframe} />
+        
       </div>
-      
     </div>
   );
+  
 };
 
 export default BitcoinChart;

@@ -1,37 +1,33 @@
 import React, { useEffect, useRef } from "react";
-import { createChart, ISeriesApi, CandlestickSeriesOptions, CandlestickData } from "lightweight-charts";
-
-
+import { createChart, ISeriesApi, CandlestickData } from "lightweight-charts";
 
 const ChartContainer = ({ theme, timeframe }: { theme: string; timeframe: string }) => {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<ReturnType<typeof createChart> | null>(null);
-  const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null); // ✅ Định nghĩa kiểu dữ liệu đúng
+  const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    // Tạo biểu đồ
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
-      height: window.innerHeight - 100,
+      height: chartContainerRef.current.clientHeight, // Đảm bảo lấy đúng chiều cao
       layout: {
         backgroundColor: theme === "dark" ? "#222" : "#fff",
         textColor: theme === "dark" ? "#DDD" : "#333",
       },
     });
 
-    // Thêm Candlestick series
     const candleSeries = chart.addCandlestickSeries();
     chartRef.current = chart;
-    candleSeriesRef.current = candleSeries; // ✅ Lưu reference đúng kiểu dữ liệu
+    candleSeriesRef.current = candleSeries;
 
     // Gọi API lấy dữ liệu nến
     const fetchData = async () => {
       const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${timeframe}&limit=50`);
       const data = await res.json();
       const formattedData: CandlestickData[] = data.map((d: any) => ({
-        time: d[0] / 1000, // Chuyển timestamp về giây
+        time: d[0] / 1000,
         open: parseFloat(d[1]),
         high: parseFloat(d[2]),
         low: parseFloat(d[3]),
@@ -43,16 +39,21 @@ const ChartContainer = ({ theme, timeframe }: { theme: string; timeframe: string
 
     fetchData();
 
-    return () => chart.remove();
-  }, [theme, timeframe]); // Cập nhật khi theme hoặc timeframe thay đổi
+    // Resize biểu đồ khi cửa sổ thay đổi kích thước
+    const handleResize = () => {
+      if (chartContainerRef.current) {
+        chart.resize(chartContainerRef.current.clientWidth, chartContainerRef.current.clientHeight);
+      }
+    };
 
-  return <>
-    <div className="page-container">
+    window.addEventListener("resize", handleResize);
+    return () => {
+      chart.remove();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [theme, timeframe]);
 
-        <div className="chart-container" ref={chartContainerRef}></div>
-
-  </div>
-  </>;
+  return <div ref={chartContainerRef} className="chart-container"></div>;
 };
 
 export default ChartContainer;
